@@ -94,16 +94,20 @@ bot.once('spawn', () => {
     bot.on('chat', (username, message) => {
         if (username === bot.username)
             return;
-        if (username === `8b8t` && message === `Please, login with the command: /login <password>`) {
+        if (username === `WDNC_KITBOT` && message === `Please, login with the command: /login <password>`) {
             bot.chat(`/login ` + process.env.BOT_PW);
             return;
         }
-         if (username === `8b8t` && message === `wdnc`) {
+         if (username === `WDNC_KITBOT` && message === `This server uses AuthMeReloaded protection!`) {
             bot.chat(`/server main ` + process.env.BOT_PW);
             return;
         }
+         if (username === `WDNC_KITBOT` && message === `Please, register with the command: /register <password> <password>`) {
+            bot.chat(`/register 11111111 11111111 ` + process.env.BOT_PW);
+            return;
+        }
 
-        if (!(username === '8b8t' && (message.toLowerCase().includes("http"))))
+        if (!(username === 'WDNC_KITBOT' && (message.toLowerCase().includes("http"))))
             chatHook(username, message);
 
         if (isWhitelisted(username)) {
