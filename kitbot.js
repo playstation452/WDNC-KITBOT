@@ -424,7 +424,7 @@ function incrementOrSet(username, callback) {
 function coordsHook() {
     if (Math.abs(bot.entity.position.x) > 15_000 && Math.abs(bot.entity.position.z) > 15_000) {
         let params = {
-            username: "KitBot",
+            username: "WDNC_KITBOT",
             content: `${tpName} - ${bot.game.dimension} ` + ":" + ` (${Math.round(bot.entity.position.x)}, ${Math.round(bot.entity.position.z)})`,
         };
 
@@ -434,7 +434,7 @@ function coordsHook() {
 
 function chatHook(username, message) {
     let params = {
-        username: "KitBot",
+        username: "WDNC_KITBOT",
         content: username + ": " + message,
     };
     hooker(params, process.env.HOOK_CHAT);
@@ -456,7 +456,7 @@ function hooker(data, url) {
 console.error = (message) => {
     let embed = [
         {
-            title: "KitBot",
+            title: "WDNC_KITBOT",
             color:  9900000,
             fields: [
                 {
