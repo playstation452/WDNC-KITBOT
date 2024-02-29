@@ -8,11 +8,11 @@ require('dotenv').config();
 const baseX = process.env.BASE_X;
 const baseZ = process.env.BASE_Z;
 
-const botName = "kitbot";
+const botName = "WDNC_KITBOT";
 
 const bot = mineflayer.createBot({
-    host: '8b8t.me',
-    username: botName,
+    host: 'netherportal.org',
+    username: WDNC_KITBOT,
     auth: 'offline',
     port: 25565,
     version: `1.12.2`,
@@ -96,6 +96,10 @@ bot.once('spawn', () => {
             return;
         if (username === `8b8t` && message === `Please, login with the command: /login <password>`) {
             bot.chat(`/login ` + process.env.BOT_PW);
+            return;
+        }
+         if (username === `8b8t` && message === `wdnc`) {
+            bot.chat(`/server main ` + process.env.BOT_PW);
             return;
         }
 
