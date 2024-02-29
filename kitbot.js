@@ -95,7 +95,7 @@ bot.once('spawn', () => {
         if (username === bot.username)
             return;
         if (username === `WDNC_KITBOT` && message === `Please, login with the command: /login <password>`) {
-            bot.chat(`/login ` + process.env.BOT_PW);
+            bot.chat(`/login 11111111 ` + process.env.BOT_PW);
             return;
         }
          if (username === `WDNC_KITBOT` && message === `This server uses AuthMeReloaded protection!`) {
