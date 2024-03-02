@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 
 bot.on('end', () => {
     console.log('Bot disconnected. Attempting to reconnect...');
-    setTimeout(createBot, 5000); // Attempt to reconnect after 5 seconds
+    setTimeout(mineflayer.createBot, 5000); // Attempt to reconnect after 5 seconds
 });
 
 
