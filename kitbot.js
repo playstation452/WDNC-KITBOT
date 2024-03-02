@@ -28,13 +28,6 @@ db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS users (username TEXT, value INTEGER)");
 });
 
-app.get('/', (req, res) => {
-    res.send('Bot is online!');
-   });
-   
-   app.listen(port, () => {
-    console.log(`Web server listening at http://localhost:${port}`);
-   });
 
 bot.on('end', () => {
     console.log('Bot disconnected. Attempting to reconnect...');
@@ -149,3 +142,12 @@ bot.once('spawn', () => {
 })
 })
 })
+app.get('/', (req, res) => {
+    res.send('Bot is online!');
+   });
+   
+   app.listen(port, () => {
+    console.log(`Web server listening at http://localhost:${port}`);
+   });
+
+   
