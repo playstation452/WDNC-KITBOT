@@ -29,12 +29,6 @@ db.serialize(() => {
 });
 
 
-bot.on('end', () => {
-    console.log('Bot disconnected. Attempting to reconnect...');
-    setTimeout(mineflayer.createBot, 5000); // Attempt to reconnect after 5 seconds
-});
-
-
 /*--------------  StopWatch  --------------*/
 
 class Stopwatch {
@@ -150,4 +144,17 @@ app.get('/', (req, res) => {
     console.log(`Web server listening at http://localhost:${port}`);
    });
 
-   
+   bot.on('end', () => {
+    console.log('Bot disconnected. Attempting to reconnect...');
+    setTimeout(() => {
+        // Recreate the bot with the same configuration
+        mineflayer.createBot({
+            host: 'netherportal.org',
+            username: botName,
+            auth: 'offline',
+            port: 25565,
+            version: `1.12.2`,
+            viewDistance: 'tiny'
+        });
+    }, 5000); // Attempt to reconnect after 5 seconds
+});
