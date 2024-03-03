@@ -17,6 +17,8 @@ const botName = "WDNC_KITBOT";
 let lastKitCommandTime = 0;
 // Variable to track the last time a cooldown message was sent for each user
 let lastCooldownMessageTime = {};
+// Variable to store the bot's positions before kill
+let botPositionsBeforeKill = [];
 
 // Function to create a new bot instance
 function createBot() {
@@ -58,23 +60,23 @@ function performInitialSetup(botInstance) {
             return;
         }
         if (username === 'NetherPortal' && message === `Teleported!`) {
+            const position = botInstance.entity.position;
+            botPositionsBeforeKill.push({ x: position.x, y: position.y, z: position.z });
+            console.log(`Bot position before kill: X=${position.x}, Y=${position.y}, Z=${position.z}`);
             botInstance.chat(`/kill `);
             return;
         }
         if (message.includes('!kit')) {
-            // Check if 10 seconds have passed since the last !kit command
             const currentTime = Date.now();
             if (currentTime - lastKitCommandTime < 10000) {
-                // Check if a cooldown message has been sent within the last 10 seconds
                 if (lastCooldownMessageTime[username] && currentTime - lastCooldownMessageTime[username] < 10000) {
-                    return; // Do not send another cooldown message
+                    return;
                 }
-                // If the command is on cooldown, send a whisper to the user
                 botInstance.chat(`/w ${username} !kit on cooldown.`);
-                lastCooldownMessageTime[username] = currentTime; // Update the last cooldown message time for this user
+                lastCooldownMessageTime[username] = currentTime;
                 return;
             }
-            lastKitCommandTime = currentTime; // Update the last command time
+            lastKitCommandTime = currentTime;
 
             botInstance.chat(`/tpa ` + username);
             return;
@@ -85,7 +87,6 @@ function performInitialSetup(botInstance) {
         }
     });
 
-    // Send a message every 2 minutes
     setInterval(() => {
         botInstance.chat('> do !kit for a kit');
     }, 120000); // 2 minutes in milliseconds
@@ -105,14 +106,14 @@ function attemptReconnect() {
             }, 5000); // Delay of 5 seconds
         });
         botInstance.on('end', attemptReconnect);
-        performInitialSetup(botInstance); // Apply chat event listener to the reconnected bot
+        performInitialSetup(botInstance);
     }, 5000); // Attempt to reconnect after 5 seconds
 }
 
 // Initial bot creation
 const bot = createBot();
 bot.on('end', attemptReconnect);
-performInitialSetup(bot); // Perform initial setup actions for the initial bot instance
+performInitialSetup(bot);
 
 const db = new sqlite3.Database('db');
 
@@ -121,7 +122,8 @@ db.serialize(() => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Bot is online!');
+    const positions = botPositionsBeforeKill.map(pos => `X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
+    res.send(`Bot positions before kill:\n${positions}`);
 });
 
 app.listen(port, () => {
