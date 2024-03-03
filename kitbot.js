@@ -52,6 +52,10 @@ function performInitialSetup(botInstance) {
             botInstance.chat(`/tpaccept `);
             return;
         }
+        if (username === 'NetherPortal' && message === `Teleported!`) {
+            botInstance.chat(`/kill `);
+            return;
+        }
         if (message.includes('!kit')) {
             botInstance.chat(`/tpa ` + username);
             return;
@@ -61,6 +65,11 @@ function performInitialSetup(botInstance) {
             return;
         }
     });
+
+    // Send a message every 2 minutes
+    setInterval(() => {
+        botInstance.chat('> do !kit for a kit');
+    }, 120000); // 2 minutes in milliseconds
 }
 
 // Function to attempt reconnection
