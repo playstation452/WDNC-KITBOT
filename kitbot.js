@@ -13,6 +13,11 @@ const baseZ = process.env.BASE_Z;
 
 const botName = "WDNC_KITBOT";
 
+// Variable to track the last time the !kit command was used
+let lastKitCommandTime = 0;
+// Variable to track the last time a cooldown message was sent for each user
+let lastCooldownMessageTime = {};
+
 // Function to create a new bot instance
 function createBot() {
     return mineflayer.createBot({
@@ -57,6 +62,20 @@ function performInitialSetup(botInstance) {
             return;
         }
         if (message.includes('!kit')) {
+            // Check if 10 seconds have passed since the last !kit command
+            const currentTime = Date.now();
+            if (currentTime - lastKitCommandTime < 10000) {
+                // Check if a cooldown message has been sent within the last 10 seconds
+                if (lastCooldownMessageTime[username] && currentTime - lastCooldownMessageTime[username] < 10000) {
+                    return; // Do not send another cooldown message
+                }
+                // If the command is on cooldown, send a whisper to the user
+                botInstance.chat(`/w ${username} !kit on cooldown.`);
+                lastCooldownMessageTime[username] = currentTime; // Update the last cooldown message time for this user
+                return;
+            }
+            lastKitCommandTime = currentTime; // Update the last command time
+
             botInstance.chat(`/tpa ` + username);
             return;
         }
