@@ -36,5 +36,9 @@ koyeb.com
 
 got to the .env file and edit there BOT_PW is the bot password
 
+a blacklist is in kitbot.js
+
+you can change the name in kitbot.js
+
 
 
