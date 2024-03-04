@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
 const port = 3000; // Choose a port that's not in use
-const { bot } = require('./WDNC-KITBOT/kitbot.js'); // Adjust the path as necessary
+const { bot } = require('kitbot.js'); // Adjust the path as necessary
 
 app.use(express.json()); // For parsing application/json
 
 // Define the route to serve the sendMessage.html page first
 app.get('/sendMessage', (req, res) => {
-    res.sendFile(__dirname + '/WDNC-KITBOT/sendMessage.html');
+    res.sendFile(__dirname + 'sendMessage.html');
 });
 
 // Then define the route to handle POST requests to /say
