@@ -10,7 +10,7 @@
     <script>
         function sendMessage() {
             const message = document.getElementById('message').value;
-            fetch('http://localhost:3000/say', {
+            fetch('http://localhost:8080/say', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
