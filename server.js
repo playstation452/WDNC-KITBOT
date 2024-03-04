@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000; // Choose a port that's not in use
+const { bot } = require('./WDNC-KITBOT/kitbot.js'); // Adjust the path as necessary
 
 app.use(express.json()); // For parsing application/json
 
