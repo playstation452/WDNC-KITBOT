@@ -5,6 +5,12 @@ const { bot } = require('./WDNC-KITBOT/kitbot.js'); // Adjust the path as necess
 
 app.use(express.json()); // For parsing application/json
 
+// Define the route to serve the sendMessage.html page first
+app.get('/sendMessage', (req, res) => {
+    res.sendFile(__dirname + '/WDNC-KITBOT/sendMessage.html');
+});
+
+// Then define the route to handle POST requests to /say
 app.post('/say', (req, res) => {
     const message = req.body.message;
     if (message) {
