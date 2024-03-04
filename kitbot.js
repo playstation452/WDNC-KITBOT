@@ -130,3 +130,6 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Web server listening at http://localhost:${port}`);
 });
+
+// Export the bot instance after it has been fully initialized
+module.exports = bot;
