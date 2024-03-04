@@ -19,3 +19,22 @@ node kitbot.js
 ```
 
 ### deploying
+
+> use uptime robot to make stuff 24/7
+
+render.com
+
+glitch.com
+
+replit.com
+
+zeabur.com
+
+koyeb.com
+
+### editing files
+
+got to the .env file and edit there BOT_PW is the bot password
+
+
+
