@@ -4,7 +4,7 @@
   "description": "",
   "main": "kitbot.js",
   "scripts": {
-    "start": "node ./WDNC-KITBOT/kitbot.js & node ./server.js"
+    "start": "kitbot.js & node server.js"
   },
   "author": "playstation451",
   "license": "MIT",
