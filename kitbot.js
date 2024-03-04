@@ -68,7 +68,7 @@ function performInitialSetup(botInstance) {
         }
         if (message.includes('!kit')) {
             if (username === 'god66') {
-                botInstance.chat(`/w god66 you are blocked from the bot nigga go fuck yourself`);
+                botInstance.chat(`/w god66 you are blocked from the bot`);
                 return;
             }
             const currentTime = Date.now();
@@ -83,10 +83,6 @@ function performInitialSetup(botInstance) {
             lastKitCommandTime = currentTime;
 
             botInstance.chat(`/tpa ` + username);
-            return;
-        }
-        if (message.includes('!kys')) {
-            botInstance.chat(`/kill ` + username);
             return;
         }
     });
