@@ -12,6 +12,7 @@ const baseX = process.env.BASE_X;
 const baseZ = process.env.BASE_Z;
 
 const botName = "WDNC_KITBOT";
+const blacklist = ['god66'];
 
 // Variable to track the last time the !kit command was used
 let lastKitCommandTime = 0;
@@ -67,8 +68,8 @@ function performInitialSetup(botInstance) {
             return;
         }
         if (message.includes('!kit')) {
-            if (username === 'god66') {
-                botInstance.chat(`/w god66 you are blocked from the bot`);
+            if (blacklist.includes(username)) {
+                botInstance.chat(`/w ${username} you are blocked from the bot go cry nigga`);
                 return;
             }
             const currentTime = Date.now();
