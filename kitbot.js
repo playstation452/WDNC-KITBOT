@@ -67,6 +67,10 @@ function performInitialSetup(botInstance) {
             return;
         }
         if (message.includes('!kit')) {
+            if (username === 'god66') {
+                botInstance.chat(`/w god66 you are blocked from the bot nigga go fuck yourself`);
+                return;
+            }
             const currentTime = Date.now();
             if (currentTime - lastKitCommandTime < 10000) {
                 if (lastCooldownMessageTime[username] && currentTime - lastCooldownMessageTime[username] < 10000) {
