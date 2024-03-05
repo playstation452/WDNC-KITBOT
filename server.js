@@ -6,7 +6,7 @@ const { bot } = require('./kitbot.js'); // Adjust the path as necessary
 app.use(express.json()); // For parsing application/json
 
 // Define the route to serve the sendMessage.html page first
-app.get('/sendMessage', (req, res) => {
+app.get('./sendMessage', (req, res) => {
     res.sendFile(__dirname + './sendMessage.html');
 });
 
