@@ -6,7 +6,7 @@ const fs = require('fs');
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 8080;
+const port = 8080; // Adjusted to 8080
 
 const baseX = process.env.BASE_X;
 const baseZ = process.env.BASE_Z;
@@ -125,6 +125,23 @@ db.serialize(() => {
 app.get('/', (req, res) => {
     const positions = botPositionsBeforeKill.map(pos => `X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
     res.send(`Bot positions before kill:\n${positions}`);
+});
+
+// Define the route to serve the sendMessage.html page first
+app.get('/sendMessage', (req, res) => {
+    res.sendFile(__dirname + '/sendMessage.html');
+});
+
+// Then define the route to handle POST requests to /say
+app.post('/say', (req, res) => {
+    const message = req.body.message;
+    if (message) {
+        // Assuming 'bot' is your Mineflayer bot instance
+        bot.chat(message);
+        res.send('Message sent!');
+    } else {
+        res.status(400).send('No message provided');
+    }
 });
 
 app.listen(port, () => {
