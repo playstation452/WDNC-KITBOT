@@ -18,7 +18,7 @@ const blacklist = ['god66'];
 let lastKitCommandTime = 0;
 // Variable to track the last time a cooldown message was sent for each user
 let lastCooldownMessageTime = {};
-// Variable to store the bot's positions before kill
+// Variable to store the bot's positions before kill, including the username of the person the bot sent the teleport request to
 let botPositionsBeforeKill = [];
 
 // Function to create a new bot instance
@@ -64,13 +64,6 @@ function performInitialSetup(botInstance) {
             botInstance.chat(`/kill `);
             return;
         }
-        if (username === 'NetherPortal' && message === `Teleported!`) {
-            const position = botInstance.entity.position;
-            botPositionsBeforeKill.push({ x: position.x, y: position.y, z: position.z });
-            console.log(`Bot position before kill: X=${position.x}, Y=${position.y}, Z=${position.z}`);
-            botInstance.chat(`/kill `);
-            return;
-        }
         if (message.includes('!kit')) {
             if (blacklist.includes(username)) {
                 botInstance.chat(`/w ${username} you are blocked from the bot go cry nigga`);
@@ -87,6 +80,8 @@ function performInitialSetup(botInstance) {
             }
             lastKitCommandTime = currentTime;
 
+            // Store the username of the person the bot sent the teleport request to along with their coordinates
+            botPositionsBeforeKill.push({ username: username, x: botInstance.entity.position.x, y: botInstance.entity.position.y, z: botInstance.entity.position.z });
             botInstance.chat(`/tpa ` + username);
             return;
         }
@@ -127,7 +122,7 @@ db.serialize(() => {
 });
 
 app.get('/', (req, res) => {
-    const positions = botPositionsBeforeKill.map(pos => `X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
+    const positions = botPositionsBeforeKill.map(pos => `Username=${pos.username}, X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
     res.send(`Bot positions before kill:\n${positions}`);
 });
 
