@@ -7,6 +7,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = 8080; // Adjusted to 8080
+const path = require('path'); // Ensure the path module is required
 
 const baseX = process.env.BASE_X;
 const baseZ = process.env.BASE_Z;
@@ -57,14 +58,9 @@ db.serialize(() => {
 // Serve static files from the "public" directory
 app.use(express.static('public'));
 
-// Route to serve minecraft-coords.html
-app.get('/updated', (req, res) => {
-    res.sendFile(path.join(__dirname, 'updated.html'));
-});
-
-// Route to serve send-message.html
-app.get('/send-message', (req, res) => {
-    res.sendFile(path.join(__dirname, 'send-message.html'));
+// Route to serve send-message.html at the root URL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'send-message.html'));
 });
 
 // Your existing routes and setup...
