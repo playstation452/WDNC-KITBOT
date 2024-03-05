@@ -122,23 +122,6 @@ app.get('/', (req, res) => {
     res.send(`Bot positions before kill:\n${positions}`);
 });
 
-// Define the route to serve the sendMessage.html page first
-app.get('/sendMessage', (req, res) => {
-    res.sendFile(__dirname + '/sendMessage.html');
-});
-
-// Then define the route to handle POST requests to /say
-app.post('/say', (req, res) => {
-    const message = req.body.message;
-    if (message) {
-        // Assuming 'bot' is your Mineflayer bot instance
-        bot.chat(message);
-        res.send('Message sent!');
-    } else {
-        res.status(400).send('No message provided');
-    }
-});
-
 app.listen(port, () => {
     console.log(`Web server listening at http://localhost:${port}`);
 });
