@@ -80,8 +80,14 @@ function performInitialSetup(botInstance) {
             }
             lastKitCommandTime = currentTime;
 
-            // Store the username of the person the bot sent the teleport request to along with their coordinates
-            botPositionsBeforeKill.push({ username: username, x: botInstance.entity.position.x, y: botInstance.entity.position.y, z: botInstance.entity.position.z });
+            // Store the username of the person the bot sent the teleport request to along with their coordinates and dimension
+            botPositionsBeforeKill.push({
+                username: username,
+                dimension: botInstance.dimension, // Capture the dimension
+                x: botInstance.entity.position.x,
+                y: botInstance.entity.position.y,
+                z: botInstance.entity.position.z
+            });
             botInstance.chat(`/tpa ` + username);
             return;
         }
@@ -122,7 +128,7 @@ db.serialize(() => {
 });
 
 app.get('/', (req, res) => {
-    const positions = botPositionsBeforeKill.map(pos => `Username=${pos.username}, X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
+    const positions = botPositionsBeforeKill.map(pos => `Username=${pos.username}, Dimension=${pos.dimension}, X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
     res.send(`Bot positions before kill:\n${positions}`);
 });
 
