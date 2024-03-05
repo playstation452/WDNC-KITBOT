@@ -21,6 +21,8 @@ let lastKitCommandTime = 0;
 let lastCooldownMessageTime = {};
 // Variable to store the bot's positions before kill
 let botPositionsBeforeKill = [];
+// Variable to store the last teleported username
+let lastTeleportedUsername = '';
 
 // Function to create a new bot instance
 function createBot() {
@@ -68,6 +70,7 @@ function performInitialSetup(botInstance) {
 
             // Assuming /tpa is the command to teleport the player to the bot
             botInstance.chat(`/tpa ${username}`);
+            lastTeleportedUsername = username; // Store the username of the teleported player
             return;
         }
 
@@ -107,7 +110,8 @@ bot.on('end', attemptReconnect);
 
 app.get('/', (req, res) => {
     const positions = botPositionsBeforeKill.map(pos => `X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
-    res.send(`Bot positions before kill:\n${positions}`);
+    // Include the last teleported username in the response
+    res.send(`Last teleported to: ${lastTeleportedUsername}\nBot positions before kill:\n${positions}`);
 });
 
 app.listen(port, () => {
