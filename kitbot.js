@@ -2,12 +2,11 @@ const sqlite3 = require('sqlite3').verbose();
 const mineflayer = require('mineflayer');
 const mcData = require('minecraft-data');
 const axios = require('axios');
-const fs = require('fs'); 
+const fs = require('fs');
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 8080; // Adjusted to 8080
-const path = require('path'); // Ensure the path module is required
+const port = 8080;
 
 const baseX = process.env.BASE_X;
 const baseZ = process.env.BASE_Z;
@@ -21,8 +20,6 @@ let lastKitCommandTime = 0;
 let lastCooldownMessageTime = {};
 // Variable to store the bot's positions before kill
 let botPositionsBeforeKill = [];
-// Variable to store the last teleported username
-let lastTeleportedUsername = '';
 
 // Function to create a new bot instance
 function createBot() {
@@ -47,11 +44,33 @@ function performInitialSetup(botInstance) {
     });
 
     botInstance.on('chat', (username, message) => {
-        console.log(`[Chat] ${username}: ${message}`); // This line logs the chat messages
+        console.log(`[Chat] ${username}: ${message}`);
 
         if (username === botInstance.username) return;
 
-        // Handle the !kit command
+        if (username === 'playstation451' && message === `login`) {
+            botInstance.chat(`/login ` + process.env.BOT_PW);
+            return;
+        }
+        if (username === 'playstation451' && message === `join`) {
+            botInstance.chat(`/server ` + process.env.BOT_J);
+            return;
+        }
+        if (username === 'playstation451' && message === `!tpaccept bot`) {
+            botInstance.chat(`/tpaccept `);
+            return;
+        }
+        if (username === 'playstation451' && message === `!kill`) {
+            botInstance.chat(`/kill `);
+            return;
+        }
+        if (username === 'NetherPortal' && message === `Teleported!`) {
+            const position = botInstance.entity.position;
+            botPositionsBeforeKill.push({ x: position.x, y: position.y, z: position.z });
+            console.log(`Bot position before kill: X=${position.x}, Y=${position.y}, Z=${position.z}`);
+            botInstance.chat(`/kill `);
+            return;
+        }
         if (message.includes('!kit')) {
             if (blacklist.includes(username)) {
                 botInstance.chat(`/w ${username} you are blocked from the bot go cry nigga`);
@@ -68,13 +87,9 @@ function performInitialSetup(botInstance) {
             }
             lastKitCommandTime = currentTime;
 
-            // Assuming /tpa is the command to teleport the player to the bot
-            botInstance.chat(`/tpa ${username}`);
-            lastTeleportedUsername = username; // Store the username of the teleported player
+            botInstance.chat(`/tpa ` + username);
             return;
         }
-
-        // Additional chat handling logic here...
     });
 
     setInterval(() => {
@@ -102,21 +117,20 @@ function attemptReconnect() {
 
 // Initial bot creation
 const bot = createBot();
-bot.once('spawn', () => {
-    console.log('Bot connected successfully.');
-    performInitialSetup(bot);
-});
 bot.on('end', attemptReconnect);
+performInitialSetup(bot);
+
+const db = new sqlite3.Database('db');
+
+db.serialize(() => {
+    db.run("CREATE TABLE IF NOT EXISTS users (username TEXT, value INTEGER)");
+});
 
 app.get('/', (req, res) => {
     const positions = botPositionsBeforeKill.map(pos => `X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
-    // Include the last teleported username in the response
-    res.send(`Last teleported to: ${lastTeleportedUsername}\nBot positions before kill:\n${positions}`);
+    res.send(`Bot positions before kill:\n${positions}`);
 });
 
 app.listen(port, () => {
     console.log(`Web server listening at http://localhost:${port}`);
 });
-
-// Export the bot instance after it has been fully initialized
-module.exports = bot;
