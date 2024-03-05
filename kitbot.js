@@ -49,25 +49,7 @@ function performInitialSetup(botInstance) {
 
         if (username === botInstance.username) return;
 
-        if (username === 'playstation451' && message === `login`) {
-            botInstance.chat(`/login ` + process.env.BOT_PW);
-            return;
-        }
-        if (username === 'playstation451' && message === `join`) {
-            botInstance.chat(`/server ` + process.env.BOT_J);
-            return;
-        }
-        if (username === 'playstation451' && message === `!tpaccept bot`) {
-            botInstance.chat(`/tpaccept `);
-            return;
-        }
-        if (username === 'NetherPortal' && message === `Teleported!`) {
-            const position = botInstance.entity.position;
-            botPositionsBeforeKill.push({ x: position.x, y: position.y, z: position.z });
-            console.log(`Bot position before kill: X=${position.x}, Y=${position.y}, Z=${position.z}`);
-            botInstance.chat(`/kill `);
-            return;
-        }
+        // Handle the !kit command
         if (message.includes('!kit')) {
             if (blacklist.includes(username)) {
                 botInstance.chat(`/w ${username} you are blocked from the bot go cry nigga`);
@@ -84,9 +66,12 @@ function performInitialSetup(botInstance) {
             }
             lastKitCommandTime = currentTime;
 
-            botInstance.chat(`/tpa ` + username);
+            // Assuming /tpa is the command to teleport the player to the bot
+            botInstance.chat(`/tpa ${username}`);
             return;
         }
+
+        // Additional chat handling logic here...
     });
 
     setInterval(() => {
@@ -113,9 +98,12 @@ function attemptReconnect() {
 }
 
 // Initial bot creation
-	@@ -122,28 +54,21 @@ db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS users (username TEXT, value INTEGER)");
+const bot = createBot();
+bot.once('spawn', () => {
+    console.log('Bot connected successfully.');
+    performInitialSetup(bot);
 });
+bot.on('end', attemptReconnect);
 
 app.get('/', (req, res) => {
     const positions = botPositionsBeforeKill.map(pos => `X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
@@ -125,5 +113,6 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Web server listening at http://localhost:${port}`);
 });
+
 // Export the bot instance after it has been fully initialized
 module.exports = bot;
