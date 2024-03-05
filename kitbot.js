@@ -36,38 +36,111 @@ function createBot() {
 
 // Function to perform initial setup actions
 function performInitialSetup(botInstance) {
-    // Your existing setup code...
+    botInstance.on('login', () => {
+        botInstance.chat(`/login 11111111 `);
+
+        setTimeout(() => {
+            botInstance.chat(`/server main`);
+        }, 5000); // Delay of 5 seconds
+    });
+
+    botInstance.on('chat', (username, message) => {
+        console.log(`[Chat] ${username}: ${message}`);
+
+        if (username === botInstance.username) return;
+
+        if (username === 'playstation451' && message === `login`) {
+            botInstance.chat(`/login ` + process.env.BOT_PW);
+            return;
+        }
+        if (username === 'playstation451' && message === `join`) {
+            botInstance.chat(`/server ` + process.env.BOT_J);
+            return;
+        }
+        if (username === 'playstation451' && message === `!tpaccept bot`) {
+            botInstance.chat(`/tpaccept `);
+            return;
+        }
+        if (username === 'NetherPortal' && message === `Teleported!`) {
+            const position = botInstance.entity.position;
+            botPositionsBeforeKill.push({ x: position.x, y: position.y, z: position.z });
+            console.log(`Bot position before kill: X=${position.x}, Y=${position.y}, Z=${position.z}`);
+            botInstance.chat(`/kill `);
+            return;
+        }
+        if (message.includes('!kit')) {
+            if (blacklist.includes(username)) {
+                botInstance.chat(`/w ${username} you are blocked from the bot go cry nigga`);
+                return;
+            }
+            const currentTime = Date.now();
+            if (currentTime - lastKitCommandTime < 10000) {
+                if (lastCooldownMessageTime[username] && currentTime - lastCooldownMessageTime[username] < 10000) {
+                    return;
+                }
+                botInstance.chat(`/w ${username} !kit on cooldown.`);
+                lastCooldownMessageTime[username] = currentTime;
+                return;
+            }
+            lastKitCommandTime = currentTime;
+
+            botInstance.chat(`/tpa ` + username);
+            return;
+        }
+    });
+
+    setInterval(() => {
+        botInstance.chat('> do !kit for a kit');
+    }, 120000); // 2 minutes in milliseconds
 }
 
 // Function to attempt reconnection
 function attemptReconnect() {
-    // Your existing reconnection code...
+    console.log('Bot disconnected. Attempting to reconnect...');
+    setTimeout(() => {
+        const botInstance = createBot();
+        botInstance.once('spawn', () => {
+            console.log('Bot reconnected successfully.');
+            botInstance.chat(`/login 11111111 `);
+
+            setTimeout(() => {
+                botInstance.chat(`/server main`);
+            }, 5000); // Delay of 5 seconds
+        });
+        botInstance.on('end', attemptReconnect);
+        performInitialSetup(botInstance);
+    }, 5000); // Attempt to reconnect after 5 seconds
 }
 
 // Initial bot creation
-const bot = createBot();
-bot.on('end', attemptReconnect);
-performInitialSetup(bot);
-
-const db = new sqlite3.Database('db');
-
-db.serialize(() => {
+	@@ -122,28 +54,21 @@ db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS users (username TEXT, value INTEGER)");
 });
 
-// Serve static files from the "public" directory
-app.use(express.static('public'));
-
-// Route to serve send-message.html at the root URL
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'send-message.html'));
+    const positions = botPositionsBeforeKill.map(pos => `X=${pos.x}, Y=${pos.y}, Z=${pos.z}`).join('\n');
+    res.send(`Bot positions before kill:\n${positions}`);
 });
 
-// Your existing routes and setup...
+// Define the route to serve the sendMessage.html page first
+app.get('/sendMessage', (req, res) => {
+    res.sendFile(__dirname + '/sendMessage.html');
+});
+
+// Then define the route to handle POST requests to /say
+app.post('/say', (req, res) => {
+    const message = req.body.message;
+    if (message) {
+        // Assuming 'bot' is your Mineflayer bot instance
+        bot.chat(message);
+        res.send('Message sent!');
+    } else {
+        res.status(400).send('No message provided');
+    }
+});
 
 app.listen(port, () => {
     console.log(`Web server listening at http://localhost:${port}`);
 });
-
 // Export the bot instance after it has been fully initialized
 module.exports = bot;
