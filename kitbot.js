@@ -13,6 +13,8 @@ const baseZ = process.env.BASE_Z;
 
 const botName = "WDNC_KITBOT";
 const blacklist = ['god66'];
+// Define a whitelist array for the !kill command
+const killWhitelist = ['playstation451'];
 
 // Variable to track the last time the !kit command was used
 let lastKitCommandTime = 0;
@@ -61,7 +63,12 @@ function performInitialSetup(botInstance) {
             return;
         }
         if (username === 'playstation451' && message === `!kill`) {
-            botInstance.chat(`/kill `);
+            // Check if the user is in the killWhitelist before executing the !kill command
+            if (killWhitelist.includes(username)) {
+                botInstance.chat(`/kill `);
+            } else {
+                botInstance.chat(`/w ${username} You are not authorized to use the !kill command.`);
+            }
             return;
         }
         if (message.includes('!kit')) {
